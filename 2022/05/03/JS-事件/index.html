@@ -1,0 +1,526 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/favicon.png">
+  <link rel="icon" href="/blog/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="YanQi">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="事件流历史上最初的两家浏览器开发团队都认为，当你点击一个按钮，实际上不光点击了这个按钮，还点击了整个页面，于是有了事件流来描述页面接收事件的顺序。 事件冒泡从最具体的元素（文档树中最深的节点）开始触发，然后向上传播至没有那么具体的元素。   事件捕获最不具体的节点应该最先收到事件，而最具体的节点应该最后收到事件   DOM事件流DOM2 Events规范规定事件流分为3个阶段：事件捕获、到达目标、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS-事件">
+<meta property="og:url" content="https://wyq521.github.io/blog/2022/05/03/JS-%E4%BA%8B%E4%BB%B6/index.html">
+<meta property="og:site_name" content="YanQi">
+<meta property="og:description" content="事件流历史上最初的两家浏览器开发团队都认为，当你点击一个按钮，实际上不光点击了这个按钮，还点击了整个页面，于是有了事件流来描述页面接收事件的顺序。 事件冒泡从最具体的元素（文档树中最深的节点）开始触发，然后向上传播至没有那么具体的元素。   事件捕获最不具体的节点应该最先收到事件，而最具体的节点应该最后收到事件   DOM事件流DOM2 Events规范规定事件流分为3个阶段：事件捕获、到达目标、">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wyq521.github.io/blog/2022/05/03/JS-%E4%BA%8B%E4%BB%B6/JS-事件/image-20220503104416782.png">
+<meta property="og:image" content="https://wyq521.github.io/blog/2022/05/03/JS-%E4%BA%8B%E4%BB%B6/JS-事件/image-20220503112636564.png">
+<meta property="og:image" content="https://wyq521.github.io/blog/2022/05/03/JS-%E4%BA%8B%E4%BB%B6/JS-事件/image-20220503113109718.png">
+<meta property="article:published_time" content="2022-05-03T02:32:04.000Z">
+<meta property="article:modified_time" content="2022-05-05T02:50:21.361Z">
+<meta property="article:author" content="YanQi">
+<meta property="article:tag" content="JavaScript">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://wyq521.github.io/blog/2022/05/03/JS-%E4%BA%8B%E4%BB%B6/JS-事件/image-20220503104416782.png">
+  
+  
+  <title>JS-事件 - YanQi</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"wyq521.github.io","root":"/blog/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/blog/local-search.xml"};
+  </script>
+  <script  src="/blog/js/utils.js" ></script>
+  <script  src="/blog/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/blog/">
+      <strong>YanQi说他不开心</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/blog/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="JS-事件">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      YanQi
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-05-03 10:32" pubdate>
+        2022年5月3日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      911 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      8 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">JS-事件</h1>
+            
+            <div class="markdown-body">
+              <h1 id="事件流"><a href="#事件流" class="headerlink" title="事件流"></a>事件流</h1><p>历史上最初的两家浏览器开发团队都认为，当你点击一个按钮，实际上不光点击了这个按钮，还点击了整个页面，于是有了事件流来描述页面接收事件的顺序。</p>
+<h2 id="事件冒泡"><a href="#事件冒泡" class="headerlink" title="事件冒泡"></a>事件冒泡</h2><p>从最具体的元素（文档树中最深的节点）开始触发，然后向上传播至没有那么具体的元素。</p>
+<center><img src="JS-事件/image-20220503104416782.png" srcset="/blog/img/loading.gif" lazyload alt="image-20220503104416782" style="zoom:50%;" /></center>
+
+<h2 id="事件捕获"><a href="#事件捕获" class="headerlink" title="事件捕获"></a>事件捕获</h2><p>最不具体的节点应该最先收到事件，而最具体的节点应该最后收到事件</p>
+<center><img src="JS-事件/image-20220503112636564.png" srcset="/blog/img/loading.gif" lazyload alt="image-20220503112636564" style="zoom:50%;" /></center>
+
+<h2 id="DOM事件流"><a href="#DOM事件流" class="headerlink" title="DOM事件流"></a>DOM事件流</h2><p>DOM2 Events规范规定事件流分为3个阶段：事件捕获、到达目标、事件冒泡</p>
+<center><img src="JS-事件/image-20220503113109718.png" srcset="/blog/img/loading.gif" lazyload alt="image-20220503113109718" style="zoom:50%;" /></center>
+
+<p>捕获阶段为提前拦截事件提供了可能，然后最具体的元素接收到事件，最后一个阶段是冒泡，最迟要在这个阶段响应事件</p>
+<p>但大多数浏览器实现了一个小小的扩展，在捕获阶段也会在事件目标上触发事件，最终结果是在最具体的元素上有两个机会来处理事件</p>
+<h2 id="事件处理"><a href="#事件处理" class="headerlink" title="事件处理"></a>事件处理</h2><h3 id="DOM0"><a href="#DOM0" class="headerlink" title="DOM0"></a>DOM0</h3><p>把一个函数赋值给DOM元素的事件处理程序</p>
+<p>以这种方式添加的事件处理程序注册在事件的冒泡阶段</p>
+<h3 id="DOM2"><a href="#DOM2" class="headerlink" title="DOM2"></a>DOM2</h3><p><code>addEventListener()</code> <code>removeEventListener()</code>  他们接受三个参数</p>
+<ul>
+<li>事件名</li>
+<li>事件处理函数</li>
+<li>option <ul>
+<li>true: 捕获阶段调用事件处理程序</li>
+<li>false: 冒泡阶段调用事件处理程序</li>
+</ul>
+</li>
+</ul>
+<h1 id="事件对象"><a href="#事件对象" class="headerlink" title="事件对象"></a>事件对象</h1><p>事件对象有一堆属性和方法（很多没见过）</p>
+<ul>
+<li><p><code>target</code> <code>currentTarget</code></p>
+</li>
+<li><p><code>type</code></p>
+</li>
+<li><p><code>preventDefault()</code></p>
+</li>
+<li><p><code>stopPropagation()</code><br>立即阻止事件流在DOM结构中传播，取消后续的事件捕获和冒泡 </p>
+</li>
+<li><p><code>eventPhase</code></p>
+<blockquote>
+<ul>
+<li>1 捕获阶段</li>
+<li>2 在目标上被调用</li>
+<li>3 在冒泡阶段被调用</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h1 id="事件类型"><a href="#事件类型" class="headerlink" title="事件类型"></a>事件类型</h1><ul>
+<li>用户界面事件（UIEvent）</li>
+<li>焦点事件 (FocusEvent)</li>
+<li>鼠标事件(MouseEvent)</li>
+<li>滚轮事件(WheelEvent)</li>
+<li>输入事件(InputEvent)</li>
+<li>键盘事件(KeyboardEvent)</li>
+<li>合成事件(CompositionEvent)</li>
+<li>HTML5事件</li>
+<li>触摸与手势事件</li>
+</ul>
+<h1 id="内存与性能"><a href="#内存与性能" class="headerlink" title="内存与性能"></a>内存与性能</h1><h2 id="事件委托"><a href="#事件委托" class="headerlink" title="事件委托"></a>事件委托</h2><p>过多事件处理程序的解决方案是使用事件委托<br>利用事件的冒泡机制把子元素上的监听事件添加到父元素上，来减少事件处理程序的数量</p>
+<h2 id="删除事件处理程序"><a href="#删除事件处理程序" class="headerlink" title="删除事件处理程序"></a>删除事件处理程序</h2><p>用不到的事件处理程序要及时删除<br>通过直接修改innerHTML方式</p>
+<h1 id="模拟事件"><a href="#模拟事件" class="headerlink" title="模拟事件"></a>模拟事件</h1><p>使用document.createEvent() 方法创建一个event对象<br>使用<code>dispatchEvent()</code>方法触发事件</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/categories/JavaScript/">JavaScript</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/tags/JavaScript/">JavaScript</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/blog/2022/05/04/JS-Canvas/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">JS-Canvas</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2022/04/30/JS-DOM/">
+                        <span class="hidden-mobile">JS-DOM</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <span>Powered by Hexo</span> <i class="iconfont icon-love"></i> <span>Theme -</span> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <i class="iconfont icon-love"></i> <span>Mod by YanQi</span> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/events.js" ></script>
+<script  src="/blog/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/blog/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/blog/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/blog/js/boot.js" ></script>
+
+
+</body>
+</html>

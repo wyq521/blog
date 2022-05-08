@@ -3,5 +3,267 @@
   
   
   
+  <entry>
+    <title>JS-客户端存储</title>
+    <link href="/blog/2022/05/08/JS-%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AD%98%E5%82%A8/"/>
+    <url>/blog/2022/05/08/JS-%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AD%98%E5%82%A8/</url>
+    
+    <content type="html"><![CDATA[<h1 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h1><p>cookie的构成</p><ol><li>名称<br>cookie的唯一标识</li><li>值<br>存储在cookie里的字符串值，这个值必须经过URL编码</li><li>域<br>cookie有效的域，这个cookie应用的域</li><li>路径<br>只有在URL包含中包含这个路径才会把cookie发送到服务器</li><li>过期时间<br>设置什么时间之后就不发送到服务器了</li><li>安全标志<br>设置后只有在安全连接的情况下才会把cookie发送到服务器</li></ol><p>对cookie的限制及其特性决定了cookie不是存储大量数据的理想方式，因此其他客户端存储技术出现了。</p><h1 id="Web-Storage浏览器存储"><a href="#Web-Storage浏览器存储" class="headerlink" title="Web Storage浏览器存储"></a>Web Storage浏览器存储</h1><h2 id="sessionStorage"><a href="#sessionStorage" class="headerlink" title="sessionStorage"></a><code>sessionStorage</code></h2><p>只存储会话数据，数据只会存储到浏览器关闭</p><p>存储数据的方法</p><figure class="highlight js"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div></td><td class="code"><pre><code class="hljs js">sessionStorage.<span class="hljs-title function_">setItem</span>(key,value);<br>sessionStorage.<span class="hljs-property">key</span> = value;<br></code></pre></td></tr></table></figure><p>写入数据使用同步阻塞方式，写入的数据可以被立即读取</p><p>读取数据</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js">sessionStorage.<span class="hljs-title function_">getItem</span>(key)<br>sessionStorage.<span class="hljs-property">key</span><br></code></pre></td></tr></table></figure><p>删除数据</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js">sessionStorage.<span class="hljs-title function_">removeItem</span>(key)<br><span class="hljs-keyword">delete</span> sessionStorage.<span class="hljs-property">key</span><br></code></pre></td></tr></table></figure><h2 id="localStorage"><a href="#localStorage" class="headerlink" title="localStorage"></a><code>localStorage</code></h2><p>客户端的持久化存储机制，数据会保留到通过JS删除或者用户清除浏览器缓存<br>与<code>sessionStorage</code>使用方法一样</p><h1 id="IndexedDB"><a href="#IndexedDB" class="headerlink" title="IndexedDB"></a>IndexedDB</h1><p>与前面的不同IndexedDB的设计是异步的，大多数操作以请求的形式执行，不是基于promise的，是基于回调的哭了<br>NoSQL风格的<br>怎么用？</p><ol><li><code>indexedDB.open(name:string,version:number)</code><br>接收两个参数，数据库名称，版本</li><li>存储</li><li>事务</li><li>游标</li><li>KeyRange</li><li>索引</li><li>并发问题</li><li>限制</li></ol>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>JS-网络请求</title>
+    <link href="/blog/2022/05/08/JS-%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/"/>
+    <url>/blog/2022/05/08/JS-%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82/</url>
+    
+    <content type="html"><![CDATA[<p>Ajax(Asynchronous JavaScript+XML),异步JS+XML技术，向服务器请求额外数据而不刷新页面</p><p>XHR(XMLHttpRequest)对象</p><blockquote><p>这个对象过时了，应该尽可能使用Fetch API</p><p>那么为什么呢？</p></blockquote><p><code>let xhr = new XMLHttpRequest()</code></p><p>使用XHR对象</p><h1 id="跨源资源共享-CORS-Cross-Origin-Resource-Sharing"><a href="#跨源资源共享-CORS-Cross-Origin-Resource-Sharing" class="headerlink" title="跨源资源共享(CORS,Cross-Origin Resource Sharing)"></a>跨源资源共享(CORS,Cross-Origin Resource Sharing)</h1><p>什么是跨源资源共享？</p><p>默认情况下，XHR只能访问与发起请求的页面在同一个域内的资源</p><p>CORS定义了浏览器和服务器如何实现跨源通信</p><p>对于简单的请求，比如GET/POST请求，没有自定义头部，而且请求体是text/plain类型，这样的请求在发送时会有一个额外的头部Origin</p><p>Origin头部包含发送请求的页面的源（协议、域名和端口），以便服务器确定是否为其提供响应</p><p>比如：<code>origin: http://www.wyq.net</code></p><p>如果服务器决定响应请求，那么在Response Header 中应该有<br><code>Access-Control-Allow-origin: http://www.wyq.net</code></p><p>如果没有这个头部，或者有但是源不匹配，就表明浏览器不会响应此请求</p><p>出于安全考虑，跨域XHR对象有一些额外限制</p><ul><li>不能使用<code>setRequestHeader()</code>设置自定义头部</li><li>不能发送和接收cookie</li><li><code>getAllResponseHeaders()</code>方法始终返回空字符串</li></ul><blockquote><p>书中建议，访问本地资源时使用相对URL，访问远程资源时使用绝对url</p></blockquote><h2 id="预检请求"><a href="#预检请求" class="headerlink" title="预检请求"></a>预检请求</h2><p>预检在发送高级请求时，会先向服务器发送一个预检请求，这个请求使用OPTIONS方法，并且包含以下头部内容</p><ul><li>Origin</li><li>Access-Control-Request-Method</li></ul><h2 id="凭据请求"><a href="#凭据请求" class="headerlink" title="凭据请求"></a>凭据请求</h2><p>默认情况下，跨源请求不提供凭据（cookie,HTTP认证，SSL证书）。</p><h2 id="替代性跨源技术"><a href="#替代性跨源技术" class="headerlink" title="替代性跨源技术"></a>替代性跨源技术</h2><h3 id="图片探测"><a href="#图片探测" class="headerlink" title="图片探测"></a>图片探测</h3><p>图片探测是利用<code>&lt;img&gt;</code>标签实现跨域通信的一种技术，任何页面都可以跨域加载图片而不必担心限制</p><h3 id="JSONP"><a href="#JSONP" class="headerlink" title="JSONP"></a>JSONP</h3><p>JSON with padding</p><p>书里讲得很简单，感觉实际开发上的应用应该不是这样子的</p><h1 id="Fetch-API"><a href="#Fetch-API" class="headerlink" title="Fetch API"></a><code>Fetch API</code></h1><p><code>Fetch API</code> 能够执行<code>XHR</code>对象的所有任务，且必定为异步形式</p><h2 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h2><h2 id="常见Fetch请求模式"><a href="#常见Fetch请求模式" class="headerlink" title="常见Fetch请求模式"></a>常见Fetch请求模式</h2><ol><li>发送JSON数据</li><li>在请求体中发送参数</li><li>发送文件</li><li>加载Blob文件</li><li>发送跨源请求</li><li>中断请求</li></ol><p>这里书中没提到显示进度</p><p>感觉说的Fetch API更现代更推荐使用大概是因为他是基于promise的吧</p><h2 id="Headers"><a href="#Headers" class="headerlink" title="Headers"></a>Headers</h2><h2 id="Request-对象"><a href="#Request-对象" class="headerlink" title="Request 对象"></a>Request 对象</h2><h2 id="Response-对象"><a href="#Response-对象" class="headerlink" title="Response 对象"></a>Response 对象</h2><h2 id="Request、Response及Body混入"><a href="#Request、Response及Body混入" class="headerlink" title="Request、Response及Body混入"></a>Request、Response及Body混入</h2><h1 id="Web-Socket"><a href="#Web-Socket" class="headerlink" title="Web Socket"></a>Web Socket</h1><p>实现与服务器的全双工、双向通信<br>在JS中创建Web Socket时，一个HTTP请求会发送到服务器以初始化连接，服务器响应后，连续使用HTTP的Upgrade头部从HTTP协议切换到Web Socket协议。<br>URL也得改变，不能再使用<code>http://</code>或者<code>https://</code>而要使用<code>ws://</code>或者<code>wss://</code></p><ol><li><p>API<br>同源策略不适用于<code>Web Socket</code></p><figure class="highlight javascript"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> ws = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WebSocket</span>(<span class="hljs-string">&quot;ws://wwww.xxxx.com&quot;</span>)<br></code></pre></td></tr></table></figure></li><li><p>发送和接收数据<br>通过send()方法向服务器发送数据，支持传入字符串，ArrayBuffer或者Blob</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">socket.<span class="hljs-title function_">send</span>()<br></code></pre></td></tr></table></figure><p>？？接收数据呢？</p></li><li><p>其他事件</p><ul><li>open  连接成功建立时触发</li><li>error: 发生错误时触发，连接会挂掉</li><li>close: 连接关闭时触发</li></ul></li></ol><h1 id="安全问题"><a href="#安全问题" class="headerlink" title="安全问题"></a>安全问题</h1>]]></content>
+    
+    
+    <categories>
+      
+      <category>JS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>JavaScript</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>JS-API</title>
+    <link href="/blog/2022/05/06/JS-API/"/>
+    <url>/blog/2022/05/06/JS-API/</url>
+    
+    <content type="html"><![CDATA[<h1 id="File-API-与-Blob-API"><a href="#File-API-与-Blob-API" class="headerlink" title="File API 与 Blob API"></a>File API 与 Blob API</h1><h1 id="媒体元素"><a href="#媒体元素" class="headerlink" title="媒体元素"></a>媒体元素</h1><p>支持视频，音频</p><p><code>&lt;audio&gt;</code></p><p><code>&lt;vedio&gt;</code></p><h1 id="原生拖放"><a href="#原生拖放" class="headerlink" title="原生拖放"></a>原生拖放</h1><h2 id="拖放事件"><a href="#拖放事件" class="headerlink" title="拖放事件"></a>拖放事件</h2><ol><li>dragstart<br>在被拖动元素上触发</li><li>drag<br>在dragstart事件触发后只要目标还在被拖动就会持续触发drag事件</li><li>dragend<br>当拖动停止会触发dragend</li></ol><p>这三个时间的触发对象都是被拖动元素</p><p>在把元素拖动到一个有效的放置位置上时会依次触发以下事件</p><ol><li>dragenter</li><li>dragover</li><li>dragleave或drop</li></ol><p>怎么把一个默认不允许放置的元素变成有效的放置目标呢？（光标层面）</p><p>覆盖<code>dragenter</code>和<code>dragover</code>事件的默认行为</p><p>这样在把某个元素拖动到无效放置目标上时，会看到一个特殊光标（圆环中间一条斜杠）表示不能放下，就会变成允许放置的光标</p><h2 id="dataTransfer对象"><a href="#dataTransfer对象" class="headerlink" title="dataTransfer对象"></a><code>dataTransfer</code>对象</h2><h1 id="Page-Visibility-API"><a href="#Page-Visibility-API" class="headerlink" title="Page Visibility API"></a>Page Visibility API</h1><p>这个API用来确定用户什么时候真正在使用页面，如果页面被最小化或隐藏在其他标签后面那么轮询或者更新动画等功能就可以缓一缓</p><p><code>document.visibilityState</code>值表示下面4种状态之一</p><ul><li>页面在后台标签页或浏览器中最小化了</li><li>页面在前台标签页中了</li><li>页面隐藏了，但对页面的预览是可见的？</li><li>页面在屏外预渲染？？？</li><li><code>hidden</code></li><li><code>visible</code></li><li>‘prerender’</li></ul><p><code>visibilitychange</code>事件，在文档的可见性改变时触发</p><h1 id="Stream-API"><a href="#Stream-API" class="headerlink" title="Stream API"></a>Stream API</h1><p>可读流</p><p>可写流</p><p>转换流</p><p>通过管道连接流</p><h1 id="Time-API"><a href="#Time-API" class="headerlink" title="Time API"></a>Time API</h1><p>高精度时间API</p><p><code>Date.now()</code>只适用于日期时间相关操作，计时只能到毫秒级</p><p><code>window.performance.now()</code> 这个方法可以到微秒级，用来度量时间的流逝</p><blockquote><p>通过<code>performance.now()</code>测量L1缓存与主内存的延迟差，幽灵漏洞可以执行缓存推断攻击，</p><p>为了弥补这个安全漏洞，主流浏览器有的选择降低精确度</p><p>什么是幽灵攻击？？？</p></blockquote><h1 id="Web组件"><a href="#Web组件" class="headerlink" title="Web组件"></a>Web组件</h1><p>HTML模版</p><h2 id="影子DOM"><a href="#影子DOM" class="headerlink" title="影子DOM"></a>影子DOM</h2><p>影子DOM通过<code>attachShadow()</code>方法创建并添加给有效HTML</p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>JS-工作者线程</title>
+    <link href="/blog/2022/05/06/JS-%E5%B7%A5%E4%BD%9C%E8%80%85%E7%BA%BF%E7%A8%8B/"/>
+    <url>/blog/2022/05/06/JS-%E5%B7%A5%E4%BD%9C%E8%80%85%E7%BA%BF%E7%A8%8B/</url>
+    
+    <content type="html"><![CDATA[<p>JS不是单线程的吗？怎么出来一个工作者线程？</p><p>在浏览器中每打开一个页面就会分配一个它自己的环境，每个页面都有自己的内存、时间循环、DOM等等</p><p>使用工作者线程，浏览器可以在原始页面环境之外再分配一个完全独立的二级子环境</p><h1 id="工作者线程"><a href="#工作者线程" class="headerlink" title="工作者线程"></a>工作者线程</h1><h2 id="工作者线程与线程"><a href="#工作者线程与线程" class="headerlink" title="工作者线程与线程"></a>工作者线程与线程</h2><p>工作者线程与线程的比较</p><ol><li>工作者线程是以实际线程实现的</li><li>工作者线程并行执行，页面和工作者线程都是单线程JS环境，每个环境中的指令则可以并行执行</li><li>工作者线程可以共享某些内存，工作者线程能够使用<code>SharedArrayBuffer</code>在多个环境间共享内容，使用<code>Atomics</code>实现并发控制</li><li>工作者线程不共享全部内存，除了<code>SharedArrayBuffer</code>外从工作者线程进出的数据需要复制或转移</li><li>工作者线程不一定在同一个进程里</li><li>创建工作者线程的开销更大，工作者线程有自己独立的事件循环，全局对象和其他JS环境必备特性</li></ol><p>工作者线程的类型</p><ol><li>专用工作者线程<br>只能被创建他的页面使用</li><li>共享工作者线程<br>可以被多个不同的页面使用</li><li>服务工作者线程<br>与前两个截然不同，主要用途是拦截、重定向和修改页面发出的请求</li></ol><h2 id="原子操作API"><a href="#原子操作API" class="headerlink" title="原子操作API"></a>原子操作API</h2><p><code>Atomics</code> API</p><p>只能操作<code>SharedArrayBuffer</code></p><ol><li><p>原子运算</p></li><li><p>原子读写</p></li><li><p>原子交换</p></li><li><p>原子<code>Futex</code>操作与加锁<br><code>Atomics</code> API 模仿Linux Futex(fast user space mutex 快速用户空间互斥量)实现了简单的锁机制<br><code>Atomics.wait()</code><br><code>Atomics.notify()</code></p></li></ol>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>js</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>JS-Canvas</title>
+    <link href="/blog/2022/05/04/JS-Canvas/"/>
+    <url>/blog/2022/05/04/JS-Canvas/</url>
+    
+    <content type="html"><![CDATA[<h1 id="requestAnimationFrame"><a href="#requestAnimationFrame" class="headerlink" title="requestAnimationFrame"></a><code>requestAnimationFrame</code></h1><ul><li></li><li><p>居然能用来节流？后面节流专题我们在详细讨论</p></li></ul><h1 id="lt-canvas-gt-元素"><a href="#lt-canvas-gt-元素" class="headerlink" title="&lt;canvas&gt;元素"></a><code>&lt;canvas&gt;</code>元素</h1><h1 id="绘制2D图形"><a href="#绘制2D图形" class="headerlink" title="绘制2D图形"></a>绘制2D图形</h1><h1 id="绘制3D图形"><a href="#绘制3D图形" class="headerlink" title="绘制3D图形"></a>绘制3D图形</h1>]]></content>
+    
+    
+    <categories>
+      
+      <category>JavaScript</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>JS</tag>
+      
+      <tag>canvas</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>JS-事件</title>
+    <link href="/blog/2022/05/03/JS-%E4%BA%8B%E4%BB%B6/"/>
+    <url>/blog/2022/05/03/JS-%E4%BA%8B%E4%BB%B6/</url>
+    
+    <content type="html"><![CDATA[<h1 id="事件流"><a href="#事件流" class="headerlink" title="事件流"></a>事件流</h1><p>历史上最初的两家浏览器开发团队都认为，当你点击一个按钮，实际上不光点击了这个按钮，还点击了整个页面，于是有了事件流来描述页面接收事件的顺序。</p><h2 id="事件冒泡"><a href="#事件冒泡" class="headerlink" title="事件冒泡"></a>事件冒泡</h2><p>从最具体的元素（文档树中最深的节点）开始触发，然后向上传播至没有那么具体的元素。</p><center><img src="JS-事件/image-20220503104416782.png" alt="image-20220503104416782" style="zoom:50%;" /></center><h2 id="事件捕获"><a href="#事件捕获" class="headerlink" title="事件捕获"></a>事件捕获</h2><p>最不具体的节点应该最先收到事件，而最具体的节点应该最后收到事件</p><center><img src="JS-事件/image-20220503112636564.png" alt="image-20220503112636564" style="zoom:50%;" /></center><h2 id="DOM事件流"><a href="#DOM事件流" class="headerlink" title="DOM事件流"></a>DOM事件流</h2><p>DOM2 Events规范规定事件流分为3个阶段：事件捕获、到达目标、事件冒泡</p><center><img src="JS-事件/image-20220503113109718.png" alt="image-20220503113109718" style="zoom:50%;" /></center><p>捕获阶段为提前拦截事件提供了可能，然后最具体的元素接收到事件，最后一个阶段是冒泡，最迟要在这个阶段响应事件</p><p>但大多数浏览器实现了一个小小的扩展，在捕获阶段也会在事件目标上触发事件，最终结果是在最具体的元素上有两个机会来处理事件</p><h2 id="事件处理"><a href="#事件处理" class="headerlink" title="事件处理"></a>事件处理</h2><h3 id="DOM0"><a href="#DOM0" class="headerlink" title="DOM0"></a>DOM0</h3><p>把一个函数赋值给DOM元素的事件处理程序</p><p>以这种方式添加的事件处理程序注册在事件的冒泡阶段</p><h3 id="DOM2"><a href="#DOM2" class="headerlink" title="DOM2"></a>DOM2</h3><p><code>addEventListener()</code> <code>removeEventListener()</code>  他们接受三个参数</p><ul><li>事件名</li><li>事件处理函数</li><li>option <ul><li>true: 捕获阶段调用事件处理程序</li><li>false: 冒泡阶段调用事件处理程序</li></ul></li></ul><h1 id="事件对象"><a href="#事件对象" class="headerlink" title="事件对象"></a>事件对象</h1><p>事件对象有一堆属性和方法（很多没见过）</p><ul><li><p><code>target</code> <code>currentTarget</code></p></li><li><p><code>type</code></p></li><li><p><code>preventDefault()</code></p></li><li><p><code>stopPropagation()</code><br>立即阻止事件流在DOM结构中传播，取消后续的事件捕获和冒泡 </p></li><li><p><code>eventPhase</code></p><blockquote><ul><li>1 捕获阶段</li><li>2 在目标上被调用</li><li>3 在冒泡阶段被调用</li></ul></blockquote></li></ul><h1 id="事件类型"><a href="#事件类型" class="headerlink" title="事件类型"></a>事件类型</h1><ul><li>用户界面事件（UIEvent）</li><li>焦点事件 (FocusEvent)</li><li>鼠标事件(MouseEvent)</li><li>滚轮事件(WheelEvent)</li><li>输入事件(InputEvent)</li><li>键盘事件(KeyboardEvent)</li><li>合成事件(CompositionEvent)</li><li>HTML5事件</li><li>触摸与手势事件</li></ul><h1 id="内存与性能"><a href="#内存与性能" class="headerlink" title="内存与性能"></a>内存与性能</h1><h2 id="事件委托"><a href="#事件委托" class="headerlink" title="事件委托"></a>事件委托</h2><p>过多事件处理程序的解决方案是使用事件委托<br>利用事件的冒泡机制把子元素上的监听事件添加到父元素上，来减少事件处理程序的数量</p><h2 id="删除事件处理程序"><a href="#删除事件处理程序" class="headerlink" title="删除事件处理程序"></a>删除事件处理程序</h2><p>用不到的事件处理程序要及时删除<br>通过直接修改innerHTML方式</p><h1 id="模拟事件"><a href="#模拟事件" class="headerlink" title="模拟事件"></a>模拟事件</h1><p>使用document.createEvent() 方法创建一个event对象<br>使用<code>dispatchEvent()</code>方法触发事件</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>JavaScript</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>JavaScript</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>JS-DOM</title>
+    <link href="/blog/2022/04/30/JS-DOM/"/>
+    <url>/blog/2022/04/30/JS-DOM/</url>
+    
+    <content type="html"><![CDATA[<h1 id="DOM"><a href="#DOM" class="headerlink" title="DOM"></a>DOM</h1><p>操纵节点</p><p><code>appendChild()</code></p><p><code>insertBefore()</code></p><p><code>replaceChild()</code></p><p><code>removeChild()</code></p><p><code>document</code> 对象</p><ul><li><p>文档子节点 <code>documentElement</code></p></li><li><p>文档信息</p><ul><li>URL</li><li>domain</li><li>referrer</li></ul></li><li><p>定位元素</p><ul><li><p><code>getElementById()</code></p><blockquote><p>返回<code>HTMLCollection</code>对象</p></blockquote></li><li><p><code>getElementByName()</code></p></li><li><p><code>getElementByTagName()</code></p></li></ul></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>JavaScript</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>DOM</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>JS-BOM</title>
+    <link href="/blog/2022/04/30/JS-BOM/"/>
+    <url>/blog/2022/04/30/JS-BOM/</url>
+    
+    <content type="html"><![CDATA[<p>内容不多，大致看了，后面有了再补充</p><h1 id="window"><a href="#window" class="headerlink" title="window"></a>window</h1><ul><li>窗口大小</li><li>视口大小</li></ul><h1 id="location"><a href="#location" class="headerlink" title="location"></a>location</h1><h2 id="操作地址"><a href="#操作地址" class="headerlink" title="操作地址"></a>操作地址</h2><p>URL hash 是什么玩意儿？</p><h1 id="navigator"><a href="#navigator" class="headerlink" title="navigator"></a>navigator</h1><h1 id="screen"><a href="#screen" class="headerlink" title="screen"></a>screen</h1><h1 id="history"><a href="#history" class="headerlink" title="history"></a>history</h1><p>这个对象不会暴露用户访问过的URL（这就不带劲了呀），但可以通过它在不知道实际URL的情况下前进和后退</p><h2 id="导航"><a href="#导航" class="headerlink" title="导航"></a>导航</h2><ul><li>前进</li><li>后退</li></ul><h1 id="客户端检测"><a href="#客户端检测" class="headerlink" title="客户端检测"></a>客户端检测</h1>]]></content>
+    
+    
+    <categories>
+      
+      <category>JavaScript</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>js</tag>
+      
+      <tag>BOM</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>JS-异步编程</title>
+    <link href="/blog/2022/04/28/JS-%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/"/>
+    <url>/blog/2022/04/28/JS-%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/</url>
+    
+    <content type="html"><![CDATA[<h1 id="JS异步"><a href="#JS异步" class="headerlink" title="JS异步"></a>JS异步</h1><p>异步编程的挑战是：异步更新一个值后怎么通知其他代码呢？如果程序不需要这个值，那么继续执行不用管就行了</p><h2 id="以往的异步编程模式"><a href="#以往的异步编程模式" class="headerlink" title="以往的异步编程模式"></a>以往的异步编程模式</h2><ol><li>异步返回值</li><li>失败处理</li><li>一个异步返回值又依赖另一个异步返回值，嵌套回调，陷入回调地狱了<br>显然随着代码越来越复杂，回调策略是不具有可扩展性的，回调地狱实至名归</li></ol><h2 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h2><h3 id="Promise-A-规范"><a href="#Promise-A-规范" class="headerlink" title="Promise/A+ 规范"></a>Promise/A+ 规范</h3><p>ES6的对此规范提供了完善支持即，Promise类型</p><h3 id="先来点基础的"><a href="#先来点基础的" class="headerlink" title="先来点基础的"></a>先来点基础的</h3><ol><li><p>Promise的状态</p><ul><li>pending 待定</li><li><code>fulfilled</code> 有时也称为’resolved’ 兑现</li><li><code>rejected</code> 拒绝</li></ul></li><li><p>Promise.resolve()<br>对于这个静态方法而言，如果传入的参数本身就是一个期约，那么它的行为就类似于一个空包装<br>==这个包装会保留传入期约的状态==</p><blockquote><p>这点不好理解，</p><p>resolve一个pending状态的promise得到的还是pending状态的</p><p>相应的resolve一个rejected状态的promise得到的还是rejected状态的</p></blockquote><figure class="highlight js"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> p = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-number">7</span>);<br><span class="hljs-comment">//包装一层</span><br><span class="hljs-built_in">setTimeout</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">log</span>,<span class="hljs-number">0</span>,p===<span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(p));<span class="hljs-comment">//true</span><br><span class="hljs-comment">//包装两层</span><br><span class="hljs-built_in">setTimeout</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">log</span>,<span class="hljs-number">0</span>,p===<span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(p)));<span class="hljs-comment">//true</span><br><br><br><span class="hljs-keyword">let</span> q = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">()=&gt;</span>&#123;&#125;)<br><span class="hljs-built_in">setTimeout</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">log</span>,<span class="hljs-number">0</span>,q)<span class="hljs-comment">//Promise &#123; &lt;pending&gt; &#125;</span><br><span class="hljs-built_in">setTimeout</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">log</span>,<span class="hljs-number">0</span>,<span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(q))<span class="hljs-comment">//Promise &#123; &lt;pending&gt; &#125;</span><br><span class="hljs-built_in">setTimeout</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">log</span>,<span class="hljs-number">0</span>,q===<span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(q))<span class="hljs-comment">//true</span><br></code></pre></td></tr></table></figure></li><li><p>Promise.reject()<br>对于此静态方法要是传入期约，他的行为与resolve不同<br>传入的期约会成为他返回拒绝期约的理由</p></li><li><p>同步/异步执行的二元性</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">try</span> &#123;<br>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;foo&#x27;</span>);<br>&#125; <span class="hljs-keyword">catch</span> (e) &#123;<br><br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(e); <span class="hljs-comment">// Error: foo </span><br>&#125;<br></code></pre></td></tr></table></figure><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">try</span>&#123;<br>    <span class="hljs-keyword">let</span> t = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve,reject</span>)=&gt;</span><span class="hljs-title function_">reject</span>(<span class="hljs-number">3</span>));<br>&#125;<span class="hljs-keyword">catch</span> (e)&#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(e)<br>&#125;<br><br>[<span class="hljs-title class_">UnhandledPromiseRejection</span>: <span class="hljs-title class_">This</span> error originated either by throwing inside <span class="hljs-keyword">of</span> an <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> without a <span class="hljs-keyword">catch</span> block, or by rejecting a promise which was not handled <span class="hljs-keyword">with</span> .<span class="hljs-title function_">catch</span>(). <span class="hljs-title class_">The</span> promise rejected <span class="hljs-keyword">with</span> the reason <span class="hljs-string">&quot;3&quot;</span>.] &#123;<br>  <span class="hljs-attr">code</span>: <span class="hljs-string">&#x27;ERR_UNHANDLED_REJECTION&#x27;</span><br>&#125;<br></code></pre></td></tr></table></figure><p>第一个try-catch成功抛出并捕获错误，第二个却不行<br>拒绝Promise的错误没有抛到执行同步代码的县城里，而是通过异步消息队列来处理的</p><p>==Promise是个同步对象（在同步执行模式中使用）但也是异步执行模式的媒介==</p></li><li><p>Promise的实例方法</p><ul><li><p>Promise.prototype.then()</p><blockquote><p>then方法返回一个新的Promise实例</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">onResolved</span>(<span class="hljs-params">id</span>)&#123;<br>    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">log</span>,<span class="hljs-number">0</span>,id,<span class="hljs-string">&quot;resolved&quot;</span>)<br>&#125;<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">onRejected</span>(<span class="hljs-params">id</span>)&#123;<br>    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">log</span>,<span class="hljs-number">0</span>,id,<span class="hljs-string">&quot;rejected&quot;</span>);<br>&#125;<br><br><span class="hljs-keyword">let</span> p1 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve,rejected</span>)=&gt;</span><span class="hljs-built_in">setTimeout</span>(resolve,<span class="hljs-number">3000</span>));<br><span class="hljs-keyword">let</span> p2 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve,rejected</span>)=&gt;</span><span class="hljs-built_in">setTimeout</span>(rejected,<span class="hljs-number">3000</span>));<br>p1.<span class="hljs-title function_">then</span>(<span class="hljs-function">()=&gt;</span><span class="hljs-title function_">onResolved</span>(<span class="hljs-string">&quot;p1&quot;</span>),<span class="hljs-function">()=&gt;</span><span class="hljs-title function_">onRejected</span>(<span class="hljs-string">&quot;p1&quot;</span>));<br>p2.<span class="hljs-title function_">then</span>(<span class="hljs-function">()=&gt;</span><span class="hljs-title function_">onResolved</span>(<span class="hljs-string">&quot;p2&quot;</span>),<span class="hljs-function">()=&gt;</span><span class="hljs-title function_">onRejected</span>(<span class="hljs-string">&quot;p2&quot;</span>));<br></code></pre></td></tr></table></figure></blockquote></li><li><p>Promise.prototype.catch()</p><blockquote><p>这个方法直接收一个参数：<code>onRejected</code>处理程序，事实上这就是个语法糖，调用它就相当于调用<code>Promise.prototype.then(null,onRejected)</code></p></blockquote></li><li><p>Promise.prototype.finally()</p><blockquote><p>用于给promise添加<code>onFinally</code>处理程序，这个方法在Promise转换为解决态或拒绝态都会执行</p><p>onFinally不知道Promise的状态，用于避免<code>onResolved </code>  <code>onRejected</code> 出现冗余代码，添加清理代码</p></blockquote></li></ul></li><li><p>非重入Promise方法<br><code>then() catch() finally()</code>都只能异步执行</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> syncResolve;<br><span class="hljs-keyword">let</span> p = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>)=&gt;</span>&#123;<br>    syncResolve = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>)&#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;1:invoking resolve()&quot;</span>);<br>        <span class="hljs-title function_">resolve</span>();<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;2:resolve returns&quot;</span>);<br>    &#125;;<br><br>&#125;);<br><br>p.<span class="hljs-title function_">then</span>(<span class="hljs-function">()=&gt;</span><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;4:then handler executes&quot;</span>))<br><span class="hljs-title function_">syncResolve</span>();<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;3:synResolve() returns&quot;</span>)<br></code></pre></td></tr></table></figure></li><li><p>传递解决值和拒绝理由</p></li><li><p>拒绝Promise与拒绝错误处理</p></li></ol><h3 id="再来点难顶的，Promise连锁与Promise合成"><a href="#再来点难顶的，Promise连锁与Promise合成" class="headerlink" title="再来点难顶的，Promise连锁与Promise合成"></a>再来点难顶的，Promise连锁与Promise合成</h3><p>==undingable==</p><ol><li><p>promise 连锁，将你从回调地狱拯救</p></li><li><p>Promise合成</p><ul><li><p>Promise.all()</p><blockquote><ol><li><p>Promise.all()静态方法【静态方法在原型链上的什么位置来着？？？】创建的Promise会在一组Promise全部解决之后再解决，这个静态方法接收一个可迭代对象，返回一个新Promise</p></li><li><p>如果包含待定的Promise那么合成的Promise也会待定</p></li><li><p>如果包含拒绝的Promise那么合成的Promise也会拒绝，第一个拒绝的Promise的理由作为合成Promise的拒绝理由</p></li><li><p>如果所有Promise都成功解决则合成的Promise的解决值就是包含所有Promise解决值的数组，按照迭代器顺序</p></li></ol></blockquote></li><li><p>Promise.race()</p><blockquote><p>Promise.race() 静态方法返回一个包装Promise，是一组集合中最先解决或拒绝的Promise的镜像，这个方法接收一个可迭代对象，返回一个新Promise</p><p>Promise.race()不会对解决或拒绝的Promise区别对待,无论解决还是拒绝只要是第一个落定的promise，Promise.race()就会包装其解决值或拒绝理由并返回新Promise</p></blockquote></li><li><p>Promise串行合成，后续promise使用之前promise产生的返回值来串连</p></li></ul></li><li><p>Promise取消<br>ES6没有原生支持，可以通过<code>cancel token</code>来实现</p></li><li><p>Promise进度通知</p></li></ol><h2 id="异步函数-async-await"><a href="#异步函数-async-await" class="headerlink" title="异步函数 async/await"></a>异步函数 <code>async/await</code></h2><p>让以同步方式写的代码能够异步执行<br>首先想一下为什么需要异步函数？<br>比如一个Promise会在1000ms之后产生数值3，如果程序中其他代码要在这个值可以使用是访问它，则需要写在<code>then</code>里</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> p = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>)=&gt;</span><span class="hljs-built_in">setTimeout</span>(resolve,<span class="hljs-number">1000</span>,<span class="hljs-number">3</span>));<br><span class="hljs-keyword">function</span> <span class="hljs-title function_">handler</span>(<span class="hljs-params">x</span>)&#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(x)<br>&#125;<br>p.<span class="hljs-title function_">then</span>(handler)<br></code></pre></td></tr></table></figure><p>这其实是不方便的，后续的其他操作都得写到<code>then</code>里</p><ol><li><p><code>async</code> 声明异步函数，这个关键字可以用在函数声明，函数表达式，箭头函数和方法上</p></li><li><p>await 暂停异步函数代码的执行，等待Promise解决</p><ul><li><code>await</code>关键字必须在异步函数中使用</li></ul></li><li><p>停止和恢复执行<br>给个例子判断下打印顺序</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">   <br></code></pre></td></tr></table></figure></li><li><p>怎么理解<code>await</code> ,<code>await</code>并非只是等待一个值可用那么简单，JS运行时在碰到await关键字时，会记录在哪里暂停执行，等到<code>await</code>右边的值可用了，JS运行时会想消息队列中推送一个任务，这个任务会恢复异步函数的执行<br>因此，即使<code>await</code>后面跟着一个立即可用的值，函数的其余部分也会被异步求值</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>)&#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">2</span>)<br>    <span class="hljs-keyword">await</span> <span class="hljs-literal">null</span>;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">4</span>)<br>&#125;<br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">1</span>)<br><span class="hljs-title function_">foo</span>();<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">3</span>)<br><br><span class="hljs-comment">//1</span><br><span class="hljs-comment">//2</span><br><span class="hljs-comment">//3</span><br><span class="hljs-comment">//4</span><br></code></pre></td></tr></table></figure><p>再来个判断打印顺序理解下</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">2</span>);<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-number">8</span>));<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">9</span>);<br>&#125;<br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">bar</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">4</span>);<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-keyword">await</span> <span class="hljs-number">6</span>);<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">7</span>);<br>&#125;<br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">1</span>);<br><span class="hljs-title function_">foo</span>();<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">3</span>);<br><span class="hljs-title function_">bar</span>();<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">5</span>);<br><br><br><span class="hljs-comment">//1 2 3 4 5 8 9 6 7</span><br></code></pre></td></tr></table></figure></li></ol><h3 id="使用异步函数"><a href="#使用异步函数" class="headerlink" title="使用异步函数"></a>使用异步函数</h3><ol><li><p>实现<code>sleep()</code><br>以前通过<code>setTimeout()</code>利用js运行时来实现<br>不够优雅，必须得给个handler</p><p>现在可以使用异步函数来实现,为什么这么搞，因为优雅！</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">sleep</span>(<span class="hljs-params">delay</span>)&#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>)=&gt;</span><span class="hljs-built_in">setTimeout</span>(resolve,delay))<br>&#125;<br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>)&#123;<br>    <span class="hljs-keyword">const</span> t0 = <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>();<br>    <span class="hljs-comment">//大约暂停1000ms</span><br><br>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">sleep</span>(<span class="hljs-number">1000</span>);<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>()-t0);<br>&#125;<br><br><span class="hljs-title function_">foo</span>()<br></code></pre></td></tr></table></figure></li><li><p>利用平行执行<br>==平行加速==</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">delay</span>(<span class="hljs-params">id</span>) &#123;<br>    <span class="hljs-keyword">const</span> delay = <span class="hljs-number">1000</span>;<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>((<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`<span class="hljs-subst">$&#123;id&#125;</span> finished`</span>)<br>        <span class="hljs-title function_">resolve</span>();<br>    &#125;, delay)))<br>&#125;<br><span class="hljs-comment">//异步函数依次暂停等待每个promise完成</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">test</span>(<span class="hljs-params"></span>)&#123;<br>    <span class="hljs-keyword">const</span> d0 = <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>();<br>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">delay</span>(<span class="hljs-number">0</span>)<br>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">delay</span>(<span class="hljs-number">1</span>)<br>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">delay</span>(<span class="hljs-number">2</span>)<br>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">delay</span>(<span class="hljs-number">3</span>)<br>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">delay</span>(<span class="hljs-number">4</span>)<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`<span class="hljs-subst">$&#123;<span class="hljs-built_in">Date</span>.now()-d0&#125;</span>ms elapsed`</span>)<br>&#125;<br><br><span class="hljs-title function_">test</span>();<br><br><span class="hljs-comment">//如果顺序不是必须保证的，一次性初始化所有promise，再分别等待他们的结果</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">test2</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">const</span> d0 = <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>();<br>    <span class="hljs-keyword">const</span> promises = <span class="hljs-title class_">Array</span>(<span class="hljs-number">5</span>).<span class="hljs-title function_">fill</span>(<span class="hljs-literal">null</span>).<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">_, i</span>) =&gt;</span> <span class="hljs-title function_">delay</span>(i));<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> p <span class="hljs-keyword">of</span> promises) &#123;<br>        <span class="hljs-keyword">await</span> p;<br>    &#125;<br><br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`<span class="hljs-subst">$&#123;<span class="hljs-built_in">Date</span>.now() - d0&#125;</span>ms elapsed`</span>);<br>&#125;<br><br><span class="hljs-title function_">test2</span>()<span class="hljs-comment">//用时</span><br><br></code></pre></td></tr></table></figure><p>test2耗时比test1短很多，好好体会</p></li><li><p>串行执行<code>promise</code> </p></li></ol><h3 id="异步生成器"><a href="#异步生成器" class="headerlink" title="异步生成器"></a>异步生成器</h3>]]></content>
+    
+    
+    <categories>
+      
+      <category>JavaScript</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>异步编程</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>JS-Module</title>
+    <link href="/blog/2022/04/26/JS-Module/"/>
+    <url>/blog/2022/04/26/JS-Module/</url>
+    
+    <content type="html"><![CDATA[<p>为什么需要模块呢？</p><h1 id="ES6之前的模块"><a href="#ES6之前的模块" class="headerlink" title="ES6之前的模块"></a>ES6之前的模块</h1><h2 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h2><p>Node.js的模块系统使用了CommonJS规范，主要用于在服务器端实现模块化代码组织，但也可用于定义在浏览器中使用的模块依赖，CommonJS模块语法不能再浏览器中直接运行</p><h2 id="异步模块定义"><a href="#异步模块定义" class="headerlink" title="异步模块定义"></a>异步模块定义</h2><p>CommonJS是以服务器为目标环境的</p><h2 id="通用模块定义"><a href="#通用模块定义" class="headerlink" title="通用模块定义"></a>通用模块定义</h2><h1 id="ES6模块"><a href="#ES6模块" class="headerlink" title="ES6模块"></a>ES6模块</h1><p>ES6最大的一个改进就是引入了模块规范</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>JavaScript</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>JavaScript</tag>
+      
+      <tag>ES6</tag>
+      
+      <tag>Module</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Loading效果-让等待更有趣</title>
+    <link href="/blog/2022/04/25/Loading%E6%95%88%E6%9E%9C-%E8%AE%A9%E7%AD%89%E5%BE%85%E6%9B%B4%E6%9C%89%E8%B6%A3/"/>
+    <url>/blog/2022/04/25/Loading%E6%95%88%E6%9E%9C-%E8%AE%A9%E7%AD%89%E5%BE%85%E6%9B%B4%E6%9C%89%E8%B6%A3/</url>
+    
+    <content type="html"><![CDATA[<p class="codepen" data-height="300" data-default-tab="html,result" data-slug-hash="gOoJjvw" data-user="yanqi_dev" style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">  <span>See the Pen <a href="https://codepen.io/yanqi_dev/pen/gOoJjvw">  Untitled</a> by yanqi (<a href="https://codepen.io/yanqi_dev">@yanqi_dev</a>)  on <a href="https://codepen.io">CodePen</a>.</span></p><script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>css</tag>
+      
+      <tag>animation</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="/blog/2022/04/24/hello-world/"/>
+    <url>/blog/2022/04/24/hello-world/</url>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br></pre></div></td><td class="code"><pre><code class="hljs bash">$ hexo new <span class="hljs-string">&quot;My New Post&quot;</span><br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo server<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo generate<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo deploy<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
   
 </search>
